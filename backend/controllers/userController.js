@@ -54,35 +54,8 @@ const registerUser = async (req, res) => {
         if (!validator.isEmail(email)) {
             return res.json({ success: false, message: "Please enter a valid email" })
         }
-        const validatePassword = (password) => {
-            const errors = [];
-
-            if (password.length < 8) {
-                errors.push("At least 8 characters");
-            }
-            if (!/[a-z]/.test(password)) {
-                errors.push("At least 1 lowercase letter");
-            }
-            if (!/[A-Z]/.test(password)) {
-                errors.push("At least 1 uppercase letter");
-            }
-            if (!/[0-9]/.test(password)) {
-                errors.push("At least 1 number");
-            }
-            if (!/[^A-Za-z0-9]/.test(password)) {
-                errors.push("At least 1 symbol");
-            }
-
-            return errors;
-        };
-
-        // In your route
-        const errors = validatePassword(password);
-        if (errors.length > 0) {
-            return res.json({
-                success: false,
-                message: "Weak password. Requirements:\n" + errors.join("\n")
-            });
+        if (password.length < 8) {
+            return res.json({ success: false, message: "Please enter a strong password" })
         }
 
         // hashing user password
@@ -110,14 +83,14 @@ const registerUser = async (req, res) => {
 // Route for admin login
 const adminLogin = async (req, res) => {
     try {
-
-        const { email, password } = req.body
+        
+        const {email,password} = req.body
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign(email + password, process.env.JWT_SECRET);
-            res.json({ success: true, token })
+            const token = jwt.sign(email+password,process.env.JWT_SECRET);
+            res.json({success:true,token})
         } else {
-            res.json({ success: false, message: "Invalid credentials" })
+            res.json({success:false,message:"Invalid credentials"})
         }
 
     } catch (error) {
